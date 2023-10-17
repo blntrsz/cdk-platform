@@ -1,8 +1,9 @@
 import * as cdk from "aws-cdk-lib";
-import { CfnOutput, RemovalPolicy } from "aws-cdk-lib";
+import { CfnOutput, Duration, RemovalPolicy } from "aws-cdk-lib";
 import { LambdaRestApi } from "aws-cdk-lib/aws-apigateway";
 import { Alarm, Metric } from "aws-cdk-lib/aws-cloudwatch";
 import {
+  LambdaApplication,
   LambdaDeploymentConfig,
   LambdaDeploymentGroup,
 } from "aws-cdk-lib/aws-codedeploy";
@@ -31,21 +32,22 @@ export class LambdaStack extends cdk.Stack {
 
     const alarm = new Alarm(this, "alarm", {
       alarmDescription: "The latest deployment errors > 0", // give the alarm a name
-      metric: new Metric({
-        metricName: "Errors",
-        namespace: "AWS/Lambda",
-        statistic: "sum",
+      metric: lambda.metricErrors({
+        period: Duration.minutes(1),
         dimensionsMap: {
-          Resource: `${lambda.functionName}:${alias}`,
           FunctionName: lambda.functionName,
+          Resource: `${lambda.functionName}:${alias.aliasName}`,
+          ExecutedVersion: lambda.currentVersion.version,
         },
-        period: cdk.Duration.minutes(1),
       }),
       threshold: 1,
       evaluationPeriods: 1,
     });
 
+    const application = new LambdaApplication(this, "lambda-application");
+
     new LambdaDeploymentGroup(this, "canary-deployment", {
+      application,
       alias: alias,
       deploymentConfig: LambdaDeploymentConfig.CANARY_10PERCENT_5MINUTES,
       alarms: [alarm],
