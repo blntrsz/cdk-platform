@@ -1,6 +1,6 @@
 import * as cdk from "aws-cdk-lib";
-import { Duration, RemovalPolicy } from "aws-cdk-lib";
-import { Alarm, Metric } from "aws-cdk-lib/aws-cloudwatch";
+import { RemovalPolicy } from "aws-cdk-lib";
+import { Alarm } from "aws-cdk-lib/aws-cloudwatch";
 import {
   LambdaDeploymentConfig,
   LambdaDeploymentGroup,
@@ -26,16 +26,7 @@ export class LambdaStack extends cdk.Stack {
 
     const alarm = new Alarm(this, "alarm", {
       alarmDescription: "The latest deployment errors > 0", // give the alarm a name
-      metric: new Metric({
-        metricName: "Errors", // summing up the errors
-        namespace: "AWS/Lambda", // aws namespace
-        statistic: "sum",
-        dimensionsMap: {
-          Resource: `${lambda.functionName}:${lambda.currentVersion}`,
-          FunctionName: lambda.functionName,
-        },
-        period: Duration.minutes(1),
-      }),
+      metric: alias.metricErrors(),
       threshold: 1,
       evaluationPeriods: 1,
     });
