@@ -1,11 +1,10 @@
 import { Handler } from "aws-cdk-lib/aws-lambda";
 
 export const handler: Handler = () => {
-  throw new Error("Emulate Error 2");
   return {
-    statusCode: 200,
+    statusCode: 500,
     body: JSON.stringify({
-      message: "hello word",
+      message: "we have an emulated error",
     }),
   };
 };
