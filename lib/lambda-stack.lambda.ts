@@ -4,7 +4,7 @@ export const handler: Handler = () => {
   return {
     statusCode: 200,
     body: JSON.stringify({
-      message: "hello word 5",
+      message: "hello word",
     }),
   };
 };
