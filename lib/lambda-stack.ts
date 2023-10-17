@@ -34,6 +34,11 @@ export class LambdaStack extends cdk.Stack {
       alarmDescription: "The latest deployment errors > 0", // give the alarm a name
       metric: alias.metricErrors({
         period: Duration.minutes(1),
+        dimensionsMap: {
+          FunctionName: lambda.functionName,
+          Resource: `${lambda.functionName}:${alias.aliasName}`,
+          ExecutedVersion: lambda.currentVersion.version,
+        },
       }),
       threshold: 1,
       evaluationPeriods: 1,
