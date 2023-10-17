@@ -12,6 +12,7 @@ import { Construct } from "constructs";
 export class LambdaStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
+
     const lambda = new NodejsFunction(this, "lambda", {
       currentVersionOptions: {
         removalPolicy: RemovalPolicy.RETAIN,

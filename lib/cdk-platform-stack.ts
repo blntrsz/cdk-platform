@@ -12,8 +12,8 @@ export class CdkPlatformStack extends cdk.Stack {
     super(scope, id, props);
 
     const pipeline = new CodePipeline(this, "code-pipeline", {
-      pipelineName: "my-code-pipeline",
-      synth: new ShellStep("Synth", {
+      pipelineName: "pipeline",
+      synth: new ShellStep("synth", {
         input: CodePipelineSource.connection("blntrsz/cdk-platform", "main", {
           connectionArn:
             "arn:aws:codestar-connections:eu-central-1:155601209279:connection/51dc3226-ffdd-459d-a034-50f9ff503d2b",
