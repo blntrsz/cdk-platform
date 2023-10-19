@@ -1,7 +1,7 @@
 import * as cdk from "aws-cdk-lib";
 import { CfnOutput, Duration, RemovalPolicy } from "aws-cdk-lib";
 import { LambdaRestApi } from "aws-cdk-lib/aws-apigateway";
-import { Alarm, Metric } from "aws-cdk-lib/aws-cloudwatch";
+import { Alarm } from "aws-cdk-lib/aws-cloudwatch";
 import {
   LambdaApplication,
   LambdaDeploymentConfig,
@@ -28,7 +28,10 @@ export class LambdaStack extends cdk.Stack {
 
     const api = new LambdaRestApi(this, "myapi", {
       handler: lambda,
+      proxy: false,
     });
+
+    api.root.addMethod("GET");
 
     const alarm = new Alarm(this, "alarm", {
       alarmDescription: "The latest deployment errors > 0", // give the alarm a name
